@@ -20,7 +20,7 @@ int main() {
     std::ifstream commands("commands.txt");
     std::ofstream output("output.txt");
     if (!commands.is_open() || !output.is_open()) {
-        std::cerr << "Σφάλμα: δεν μπορώ να ανοίξω commands.txt ή output.txt\n";
+        std::cerr << "output.txt ή commands.txt δεν βρέθηκε\n";
         return 1;
     }
 
@@ -154,11 +154,6 @@ int main() {
             else if (s == "GRAPH") {
                 int a, b; parser >> a >> b;
                 graph.deleteEdge(a, b);
-                result = "SUCCESS";
-            }
-            else if (s == "HASHTABLE") {
-                int k; parser >> k;
-                hashtable.deleteKey(k);
                 result = "SUCCESS";
             }
             else result = "FAILURE";

@@ -4,7 +4,6 @@
 class Hashtable {
 private:
     int* table;     // πίνακας κλειδιών
-    bool* used;     // σημαία κατειλημμένης θέσης
     int capacity;   // μέγεθος πίνακα
     int size;       // πόσα στοιχεία έχουμε
 
@@ -18,7 +17,6 @@ public:
     void buildFromArray(const char* filename); // διαβάζει και κάνει insert από αρχείο
     void insert(int key);
     bool search(int key);
-    void deleteKey(int key);
     int getSize();
 };
 

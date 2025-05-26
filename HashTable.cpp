@@ -3,84 +3,77 @@
 
 const double LOAD_FACTOR = 0.75;
 
-Hashtable::Hashtable() {
-    table = nullptr;
-    used = nullptr;
-    capacity = 0;
-    size = 0;
+Hashtable::Hashtable()
+    : table(nullptr), capacity(0), size(0)
+{
 }
 
 Hashtable::~Hashtable() {
     delete[] table;
-    delete[] used;
-}
-
-int Hashtable::hashFunction(int key) {
-    return key % capacity;
 }
 
 void Hashtable::rehash() {
     int oldCap = capacity;
-    int* oldTable = table;
-    bool* oldUsed = used;
+    int* oldTbl = table;
 
+    // Νέο μέγεθος
     capacity = (capacity == 0 ? 4 : capacity * 2);
     table = new int[capacity];
-    used = new bool[capacity];
-    for (int i = 0; i < capacity; i++) used[i] = false;
+    // Αρχικοποίηση με sentinel για «κενή» θέση
+    for (int i = 0; i < capacity; ++i) {
+        table[i] = INT_MIN;
+    }
     size = 0;
 
-    for (int i = 0; i < oldCap; i++) {
-        if (oldUsed[i]) {
-            insert(oldTable[i]);
+    // Επανατοποθέτηση παλιών στοιχείων
+    for (int i = 0; i < oldCap; ++i) {
+        if (oldTbl[i] != INT_MIN) {
+            insert(oldTbl[i]);
         }
     }
-    delete[] oldTable;
-    delete[] oldUsed;
+    delete[] oldTbl;
 }
 
+
+// Απλή συνάρτηση κατακερματισμού
+int Hashtable::hashFunction(int key) {
+    return key % capacity;
+}
+
+
 void Hashtable::insert(int key) {
+    // rehash αν load factor πολύ μεγάλος ή αν ο πίνακας άδειος
     if (capacity == 0 || (double)size / capacity > LOAD_FACTOR) {
         rehash();
     }
     int idx = hashFunction(key);
-    while (used[idx]) {
-        if (table[idx] == key) return;  // υπάρχει ήδη
+    // Γραμμική διερεύνηση μέχρι sentinel
+    while (table[idx] != INT_MIN) {
+        if (table[idx] == key) {
+            return;  // υπάρχει ήδη
+        }
         idx = (idx + 1) % capacity;
     }
     table[idx] = key;
-    used[idx] = true;
-    size++;
+    ++size;
 }
 
-bool Hashtable::search(int key) {
+bool Hashtable::search(int key){
     if (capacity == 0) return false;
     int idx = hashFunction(key);
     int start = idx;
-    while (used[idx]) {
-        if (table[idx] == key) return true;
+    // Ψάχνουμε μέχρι να πέσουμε σε sentinel ή να βρούμε το key
+    while (table[idx] != INT_MIN) {
+        if (table[idx] == key) {
+            return true;
+        }
         idx = (idx + 1) % capacity;
         if (idx == start) break;
     }
     return false;
 }
 
-void Hashtable::deleteKey(int key) {
-    if (capacity == 0) return;
-    int idx = hashFunction(key);
-    int start = idx;
-    while (used[idx]) {
-        if (table[idx] == key) {
-            used[idx] = false;
-            size--;
-            return;
-        }
-        idx = (idx + 1) % capacity;
-        if (idx == start) break;
-    }
-}
-
-int Hashtable::getSize() {
+int Hashtable::getSize(){
     return size;
 }
 
