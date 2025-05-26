@@ -1,0 +1,26 @@
+﻿#ifndef HASHTABLE_H
+#define HASHTABLE_H
+
+// Πίνακας κατακερματισμού με ανοικτή διευθυνσιοδότηση
+class Hashtable {
+private:
+    int* table;     // πίνακας κλειδιών
+    bool* used;     // σημαία κατειλημμένης θέσης
+    int capacity;   // μέγεθος πίνακα
+    int size;       // πόσα στοιχεία έχουμε
+
+    int hashFunction(int key); // key mod capacity
+    void rehash();             // διπλασιασμός πίνακα όταν γεμίσει
+
+public:
+    Hashtable();
+    ~Hashtable();
+
+    void buildFromArray(const char* filename); // διαβάζει και κάνει insert από αρχείο
+    void insert(int key);
+    bool search(int key);
+    void deleteKey(int key);
+    int getSize();
+};
+
+#endif // HASHTABLE_H
