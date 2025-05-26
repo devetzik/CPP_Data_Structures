@@ -1,7 +1,6 @@
 ﻿#ifndef MINHEAP_H
 #define MINHEAP_H
 
-// Σωρός ελαχίστων (MinHeap)
 class MinHeap {
 private:
     int* arr;        // δυναμικός πίνακας με τα στοιχεία
@@ -24,4 +23,4 @@ public:
     void buildFromArray(int* data, int count); // κατασκευάζει σωρό από πίνακα
 };
 
-#endif // MINHEAP_H
+#endif

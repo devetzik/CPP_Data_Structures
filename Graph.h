@@ -31,9 +31,9 @@ public:
     void deleteEdge(int u, int v);           // διαγραφή ακμής u–v
     void getSize(int& vertices, int& edges); // επιστρέφει (vertices, edges)
 
-    int computeShortestPath(int src, int dest); // Dijkstra (απλό O(V²))
-    int computeSpanningTree();                  // Prim (απλό O(V²))
-    int findConnectedComponents();              // BFS (O(V+E))
+    int computeShortestPath(int src, int dest); // Dijkstra
+    int computeSpanningTree();                  // Prim
+    int findConnectedComponents();              // BFS
 };
 
-#endif // GRAPH_H
+#endif

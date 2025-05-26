@@ -1,7 +1,6 @@
 ﻿#ifndef HASHTABLE_H
 #define HASHTABLE_H
 
-// Πίνακας κατακερματισμού με ανοικτή διευθυνσιοδότηση
 class Hashtable {
 private:
     int* table;     // πίνακας κλειδιών
@@ -23,4 +22,4 @@ public:
     int getSize();
 };
 
-#endif // HASHTABLE_H
+#endif

@@ -1,5 +1,5 @@
 ﻿#include "AVLTree.h"
-#include <algorithm>  // για max()
+#include <algorithm>
 
 // Constructor: αρχικοποίηση κενού δέντρου
 AVLTree::AVLTree() : root(nullptr), nodeCount(0) {}
@@ -21,29 +21,27 @@ int AVLTree::balanceFactor(AVLNode* node) {
     return node ? height(node->left) - height(node->right) : 0;
 }
 
-// Δεξιά περιστροφή (LL)
-AVLNode* AVLTree::rotateRight(AVLNode* x) {
+AVLNode* AVLTree::rotateRight(AVLNode* x) {   // Δεξιά περιστροφή (LL)
     AVLNode* y = x->left;
     AVLNode* T2 = y->right;
-    // Εκτέλεση περιστροφής
+    
     y->right = x;
-    x->left = T2;
-    // Ενημέρωση ύψους
+    x->left = T2;   // Εκτέλεση περιστροφής
+    
     x->height = std::max(height(x->left), height(x->right)) + 1;
-    y->height = std::max(height(y->left), height(y->right)) + 1;
+    y->height = std::max(height(y->left), height(y->right)) + 1;   // Ενημέρωση ύψους
     return y;  // νέα ρίζα
 }
 
-// Αριστερή περιστροφή (RR)
-AVLNode* AVLTree::rotateLeft(AVLNode* y) {
+AVLNode* AVLTree::rotateLeft(AVLNode* y) {   // Αριστερή περιστροφή (RR)
     AVLNode* x = y->right;
     AVLNode* T2 = x->left;
-    // Εκτέλεση περιστροφής
+    
     x->left = y;
-    y->right = T2;
-    // Ενημέρωση ύψους
+    y->right = T2;   // Εκτέλεση περιστροφής
+
     y->height = std::max(height(y->left), height(y->right)) + 1;
-    x->height = std::max(height(x->left), height(x->right)) + 1;
+    x->height = std::max(height(x->left), height(x->right)) + 1;    // Ενημέρωση ύψους
     return x;  // νέα ρίζα
 }
 
@@ -59,22 +57,22 @@ AVLNode* AVLTree::insertNode(AVLNode* node, int key) {
         node->right = insertNode(node->right, key);
     }
     
-    // Ενημέρωση ύψους
-    node->height = 1 + std::max(height(node->left), height(node->right));
+
+    node->height = 1 + std::max(height(node->left), height(node->right));    // Ενημέρωση ύψους
     int balance = balanceFactor(node);
-    // LL περίπτωση
-    if (balance > 1 && key < node->left->key)
+
+    if (balance > 1 && key < node->left->key)    // LL περίπτωση
         return rotateRight(node);
-    // RR περίπτωση
-    if (balance < -1 && key > node->right->key)
+
+    if (balance < -1 && key > node->right->key)    // RR περίπτωση
         return rotateLeft(node);
-    // LR περίπτωση
-    if (balance > 1 && key > node->left->key) {
+
+    if (balance > 1 && key > node->left->key) {    // LR περίπτωση
         node->left = rotateLeft(node->left);
         return rotateRight(node);
     }
-    // RL περίπτωση
-    if (balance < -1 && key < node->right->key) {
+
+    if (balance < -1 && key < node->right->key) {    // RL περίπτωση
         node->right = rotateRight(node->right);
         return rotateLeft(node);
     }
@@ -111,13 +109,11 @@ AVLNode* AVLTree::deleteNode(AVLNode* node, int key) {
         // Περίπτωση με 1 ή 0 παιδιά
         if (!node->left || !node->right) {
             AVLNode* temp = node->left ? node->left : node->right;
-            if (!temp) {
-                // χωρίς παιδιά
+            if (!temp) {    // χωρίς παιδιά
                 temp = node;
                 node = nullptr;
             }
-            else {
-                // με ένα παιδί
+            else {   // με ένα παιδί
                 *node = *temp;
             }
             delete temp;
