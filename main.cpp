@@ -183,7 +183,7 @@ int main() {
         auto end = std::chrono::high_resolution_clock::now();    // Τέλος μέτρησης χρόνου
         auto duration_us = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-        // Γράφουμε αποτέλεσμα + χρόνο σε μs
+        // Γράφει αποτέλεσμα + χρόνο σε μs
         output << result << " " << duration_us << "us\n";
     }
 

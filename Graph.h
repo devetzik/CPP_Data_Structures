@@ -19,12 +19,8 @@ private:
     int numEdges;       // πλήθος ακμών
     EdgeNode** adj;     // δυναμικός πίνακας head pointers
 
-    // Απελευθερώνει πλήρως τη δομή (λίστες + πίνακα)
-    void clearGraph();
-
 public:
     Graph();
-    ~Graph();
 
     void buildGraph(int n);                  // αρχικοποίηση με n κορυφές
     void insertEdge(int u, int v, int w);    // εισαγωγή ακμής (u–v, βάρος w)

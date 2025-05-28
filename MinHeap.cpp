@@ -1,30 +1,31 @@
 ﻿#include "MinHeap.h"
 #include <cstring>
 
+// Constructor
 MinHeap::MinHeap() {
     capacity = 4;
     size = 0;
     arr = new int[capacity];
 }
 
+// Destructor
 MinHeap::~MinHeap() {
     delete[] arr;
 }
 
+// αν ο πίνακας είναι γεμάτος, διπλασιάζει τη χωρητικότητα
 void MinHeap::ensureCapacity() {
     if (size < capacity) return;
     int newCap = capacity * 2;
     int* newArr = new int[newCap];
-    // αντιγράφουμε τα παλιά στοιχεία
-    memcpy(newArr, arr, size * sizeof(int));
+    memcpy(newArr, arr, size * sizeof(int));    // αντιγράφουμε τα παλιά στοιχεία
     delete[] arr;
     arr = newArr;
     capacity = newCap;
 }
 
 void MinHeap::heapifyUp(int idx) {
-    // όσο δεν φτάσαμε στη ρίζα και το στοιχείο < γονέα, κάνουμε swap
-    while (idx > 0) {
+    while (idx > 0) {    // όσο δεν φτάσαμε στη ρίζα και το στοιχείο < γονέα, κάνουμε swap
         int parent = (idx - 1) / 2;
         if (arr[idx] < arr[parent]) {
             int tmp = arr[idx];
@@ -39,8 +40,7 @@ void MinHeap::heapifyUp(int idx) {
 }
 
 void MinHeap::heapifyDown(int idx) {
-    // όσο έχουμε παιδιά και παραβιάζεται η ιδιότητα, κάνουμε swap με το μικρότερο παιδί
-    while (true) {
+    while (true) {    // όσο έχει παιδιά και παραβιάζεται η ιδιότητα, κάνει swap με το μικρότερο παιδί
         int left = 2 * idx + 1;
         int right = 2 * idx + 2;
         int smallest = idx;
@@ -69,6 +69,7 @@ void MinHeap::insert(int value) {
     heapifyUp(size - 1);
 }
 
+// επιστρέφει το στοιχείο στη ρίζα του σωρού ή -1 αν είναι άδειος
 int MinHeap::getMin() {
     if (size == 0) return -1;
     return arr[0];
@@ -83,22 +84,22 @@ int MinHeap::deleteMin() {
     return minValue;
 }
 
+// επιστρέφει πόσα στοιχεία περιέχει ο σωρός
 int MinHeap::getSize() {
     return size;
 }
 
 void MinHeap::buildFromArray(int* data, int count) {
-    // απελευθερώνουμε παλιό πίνακα
-    delete[] arr;
+    delete[] arr;    // απελευθερώνει παλιό πίνακα
     capacity = count * 2;
     size = count;
     arr = new int[capacity];
-    // αντιγράφουμε τα δεδομένα
     for (int i = 0; i < count; i++) {
-        arr[i] = data[i];
+        arr[i] = data[i];    // αντιγράφει τα δεδομένα
+
     }
-    // χτίζουμε σωρό με heapifyDown από τα μέσα
     for (int i = count / 2 - 1; i >= 0; i--) {
-        heapifyDown(i);
+        heapifyDown(i);    // χτίζει σωρό με heapifyDown από τα μέσα
+
     }
 }

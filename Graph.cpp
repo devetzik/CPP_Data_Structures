@@ -5,33 +5,8 @@ static const int INF = std::numeric_limits<int>::max();
 
 Graph::Graph() : numVertices(0), numEdges(0), adj(nullptr) {}
 
-// Καθαρισμός λιστών και πίνακα
-void Graph::clearGraph() {
-    if (!adj) return;
-    // Διαγραφή κάθε λίστας γειτνίασης
-    for (int i = 0; i < numVertices; ++i) {
-        EdgeNode* p = adj[i];
-        while (p) {
-            EdgeNode* tmp = p;
-            p = p->next;
-            delete tmp;
-        }
-    }
-    delete[] adj;
-    adj = nullptr;
-    numVertices = 0;
-    numEdges = 0;
-}
-
-Graph::~Graph() {
-    clearGraph();
-}
-
 void Graph::buildGraph(int n) {
-    // Ελευθερώνουμε ό,τι υπήρχε
-    clearGraph();
-    // Ορίζουμε νέα δομή με n κορυφές, χωρίς ακμές
-    numVertices = n;
+    numVertices = n;    // Ορίζουμε νέα δομή με n κορυφές, χωρίς ακμές
     numEdges = 0;
     adj = new EdgeNode * [n];
     for (int i = 0; i < n; ++i) {
@@ -41,10 +16,8 @@ void Graph::buildGraph(int n) {
 
 void Graph::insertEdge(int u, int v, int w) {
     if (u < 0 || v < 0 || u >= numVertices || v >= numVertices) return;
-    // προσθήκη u→v
-    adj[u] = new EdgeNode(v, w, adj[u]);
-    // προσθήκη v→u (μη–κατευθυνόμενο)
-    adj[v] = new EdgeNode(u, w, adj[v]);
+    adj[u] = new EdgeNode(v, w, adj[u]);    // προσθήκη u→v
+    adj[v] = new EdgeNode(u, w, adj[v]);    // προσθήκη v→u
     ++numEdges;
 }
 
@@ -90,7 +63,7 @@ int Graph::computeShortestPath(int src, int dest) {
     }
     dist[src] = 0;
 
-    // Απλοποιημένο Dijkstra O(V^2)
+    // Dijkstra
     for (int k = 0; k < numVertices; ++k) {
         int u = -1, best = INF;
         for (int i = 0; i < numVertices; ++i) {
@@ -173,7 +146,6 @@ int Graph::findConnectedComponents() {
             }
         }
     }
-
     delete[] vis;
     return count;
 }

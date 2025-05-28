@@ -16,26 +16,23 @@ void Hashtable::rehash() {
     int oldCap = capacity;
     int* oldTbl = table;
 
-    // Νέο μέγεθος
-    capacity = (capacity == 0 ? 4 : capacity * 2);
+    capacity = (capacity == 0 ? 4 : capacity * 2);     // Νέο μέγεθος
     table = new int[capacity];
-    // Αρχικοποίηση με sentinel για «κενή» θέση
     for (int i = 0; i < capacity; ++i) {
-        table[i] = INT_MIN;
+        table[i] = INT_MIN;    // Αρχικοποίηση για «κενή» θέση
     }
     size = 0;
 
-    // Επανατοποθέτηση παλιών στοιχείων
     for (int i = 0; i < oldCap; ++i) {
         if (oldTbl[i] != INT_MIN) {
-            insert(oldTbl[i]);
+            insert(oldTbl[i]);    // Επανατοποθέτηση παλιών στοιχείων
         }
     }
     delete[] oldTbl;
 }
 
 
-// Απλή συνάρτηση κατακερματισμού
+// Συνάρτηση κατακερματισμού
 int Hashtable::hashFunction(int key) {
     return key % capacity;
 }
