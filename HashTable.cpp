@@ -11,6 +11,8 @@ Hashtable::Hashtable(){
     size = 0;
 }
 
+
+// Επανακατασκευή πίνακα όταν γεμίσει
 void Hashtable::rehash() {
     int oldCap = capacity;
     int* oldTbl = table;
@@ -41,6 +43,7 @@ int Hashtable::hashFunction(int key) {
 }
 
 
+// Εισαγωγή νέου στοιχείου στον πίνακα
 void Hashtable::insert(int key) {
     // rehash αν load factor πολύ μεγάλος ή αν ο πίνακας άδειος
     if (capacity == 0 || (double)size / capacity > LOAD_FACTOR) {

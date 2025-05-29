@@ -1,5 +1,4 @@
 ﻿#include "MinHeap.h"
-#include <cstring>
 
 // Constructor
 MinHeap::MinHeap() {
@@ -8,17 +7,22 @@ MinHeap::MinHeap() {
     arr = new int[capacity];
 }
 
+
 // αν ο πίνακας είναι γεμάτος, διπλασιάζει τη χωρητικότητα
 void MinHeap::ensureCapacity() {
     if (size < capacity) return;
     int newCap = capacity * 2;
     int* newArr = new int[newCap];
-    memcpy(newArr, arr, size * sizeof(int));    // αντιγράφουμε τα παλιά στοιχεία
+    for (int i = 0; i < size; ++i) {
+		newArr[i] = arr[i];      // Αντιγράφει τα παλιά στοιχεία
+    }
     delete[] arr;
     arr = newArr;
     capacity = newCap;
 }
 
+
+// μετά από εισαγωγή, φροντίζουμε να μην παραβιάζεται η ιδιότητα min-heap
 void MinHeap::heapifyUp(int idx) {
     while (idx > 0) {    // όσο δεν φτάσαμε στη ρίζα και το στοιχείο < γονέα, κάνουμε swap
         int parent = (idx - 1) / 2;
@@ -34,6 +38,8 @@ void MinHeap::heapifyUp(int idx) {
     }
 }
 
+
+// μετά από διαγραφή της ρίζας, φέρνουμε το τελευταίο στοιχείο πάνω
 void MinHeap::heapifyDown(int idx) {
     while (true) {    // όσο έχει παιδιά και παραβιάζεται η ιδιότητα, κάνει swap με το μικρότερο παιδί
         int left = 2 * idx + 1;
@@ -57,6 +63,8 @@ void MinHeap::heapifyDown(int idx) {
     }
 }
 
+
+// προσθέτει το νέο στοιχείο στο τέλος και εξισορροπεί προς τα πάνω
 void MinHeap::insert(int value) {
     ensureCapacity();
     arr[size] = value;
@@ -64,12 +72,15 @@ void MinHeap::insert(int value) {
     heapifyUp(size - 1);
 }
 
+
 // επιστρέφει το στοιχείο στη ρίζα του σωρού ή -1 αν είναι άδειος
 int MinHeap::getMin() {
     if (size == 0) return -1;
     return arr[0];
 }
 
+
+// αφαιρεί και επιστρέφει το ελάχιστο στοιχείο (ρίζα) ή -1 αν είναι άδειος
 int MinHeap::deleteMin() {
     if (size == 0) return -1;
     int minValue = arr[0];
@@ -79,11 +90,14 @@ int MinHeap::deleteMin() {
     return minValue;
 }
 
+
 // επιστρέφει πόσα στοιχεία περιέχει ο σωρός
 int MinHeap::getSize() {
     return size;
 }
 
+
+// κατασκευάζει σωρό από πίνακα
 void MinHeap::buildFromArray(int* data, int count) {
     delete[] arr;    // απελευθερώνει παλιό πίνακα
     capacity = count * 2;
@@ -95,6 +109,5 @@ void MinHeap::buildFromArray(int* data, int count) {
     }
     for (int i = count / 2 - 1; i >= 0; i--) {
         heapifyDown(i);    // χτίζει σωρό με heapifyDown από τα μέσα
-
     }
 }

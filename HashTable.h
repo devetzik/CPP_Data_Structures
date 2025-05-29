@@ -14,9 +14,9 @@ public:
     Hashtable();
 
     void buildFromArray(const char* filename); // διαβάζει και κάνει insert από αρχείο
-    void insert(int key);
-    bool search(int key);
-    int getSize();
+	void insert(int key);  // εισαγωγή νέου key
+	bool search(int key);  // αναζήτηση key, επιστρέφει true αν βρεθεί
+	int getSize();         // επιστρέφει πλήθος στοιχείων
 };
 
 #endif

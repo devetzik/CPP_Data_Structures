@@ -9,10 +9,14 @@ struct AVLNode {
     AVLNode* right;    // δείκτης στο δεξί παιδί
 
     // Κατασκευαστής κόμβου
-    AVLNode(int k)
-        : key(k), height(1), left(nullptr), right(nullptr) {
+    AVLNode(int k){
+        key = k;
+        height = 1;
+		left = nullptr;
+		right = nullptr;
     }
 };
+
 
 class AVLTree {
 private:
@@ -30,6 +34,7 @@ private:
 public:
     AVLTree();                     // constructor
 
+	int max(int a, int b);         // Επιστρέφει το μέγιστο από δύο ακέραιους
     void insert(int key);          // εισαγωγή νέου key
     void deleteKey(int key);       // διαγραφή υπάρχοντος key
     bool search(int key);          // αναζήτηση key, επιστρέφει true αν βρεθεί

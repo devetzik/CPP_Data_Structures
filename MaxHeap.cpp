@@ -1,5 +1,4 @@
 ﻿#include "MaxHeap.h"
-#include <cstring>
 
 // Constructor
 MaxHeap::MaxHeap() {
@@ -14,11 +13,14 @@ void MaxHeap::ensureCapacity() {
     if (size < capacity) return;    // ακόμα υπάρχει χώρος
     int newCap = capacity * 2;      // διπλασιασμός
     int* newArr = new int[newCap];
-    memcpy(newArr, arr, size * sizeof(int));    // Αντιγράφει τα παλιά στοιχεία
+    for (int i = 0; i < size; ++i) {
+        newArr[i] = arr[i];      // Αντιγράφει τα παλιά στοιχεία
+    }
     delete[] arr;                   // απελευθερώνει τον παλιό πίνακα
     arr = newArr;
     capacity = newCap;
 }
+
 
 // μετά από εισαγωγή, φροντίζουμε να μην παραβιάζεται η ιδιότητα max-heap
 void MaxHeap::heapifyUp(int index) {
@@ -35,6 +37,7 @@ void MaxHeap::heapifyUp(int index) {
         }
     }
 }
+
 
 // μετά από διαγραφή της ρίζας, φέρνουμε το τελευταίο στοιχείο πάνω
 // και διορθώνουμε προς τα κάτω ώστε να διατηρείται το max-heap
@@ -62,6 +65,7 @@ void MaxHeap::heapifyDown(int index) {
     }
 }
 
+
 // προσθέτει το νέο στοιχείο στο τέλος και εξισορροπεί προς τα πάνω
 void MaxHeap::insert(int value) {
     ensureCapacity();        // βεβαιωνόμαστε ότι υπάρχει χώρος
@@ -70,27 +74,37 @@ void MaxHeap::insert(int value) {
     heapifyUp(size - 1);     // διορθώνουμε τη δομή
 }
 
+
 // επιστρέφει το στοιχείο στη ρίζα του σωρού ή -1 αν είναι άδειος
 int MaxHeap::getMax() {
-    if (size == 0) return -1;
+    if (size == 0) {
+        return -1;
+    }
+
     return arr[0];
 }
+
 
 // αφαιρεί το μέγιστο (ρίζα), φέρνει το τελευταίο στοιχείο πάνω
 // και εξισορροπεί προς τα κάτω
 int MaxHeap::deleteMax() {
-    if (size == 0) return -1;
+    if (size == 0) {
+        return -1;
+    }
     int maxValue = arr[0];
     arr[0] = arr[size - 1];
     size--;
     heapifyDown(0);
+    
     return maxValue;
 }
+
 
 // επιστρέφει πόσα στοιχεία περιέχει ο σωρός
 int MaxHeap::getSize() {
     return size;
 }
+
 
 // κατασκευάζει σωρό από πίνακα
 void MaxHeap::buildFromArray(int* data, int count) {
@@ -104,6 +118,6 @@ void MaxHeap::buildFromArray(int* data, int count) {
     }
     
     for (int i = count / 2 - 1; i >= 0; i--) {
-		heapifyDown(i);  // χτίσιμο του σωρού
+		heapifyDown(i);   // χτίσιμο του σωρού
     }
 }

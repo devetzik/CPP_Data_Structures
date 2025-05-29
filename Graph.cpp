@@ -1,7 +1,6 @@
 ﻿#include "Graph.h"
-#include <limits>
 
-static const int INF = std::numeric_limits<int>::max();
+const int INF = 99999999; // Απείρως μεγάλο βάρος για Dijkstra
 
 Graph::Graph(){
     numVertices = 0;
@@ -52,11 +51,15 @@ void Graph::deleteEdge(int u, int v) {
     }
 }
 
+
+// Επιστρέφει το πλήθος κορυφών και ακμών
 void Graph::getSize(int& vertices, int& edges) {
     vertices = numVertices;
     edges = numEdges;
 }
 
+
+// Υπολογίζει το βραχύτερο μονοπάτι από src σε dest με Dijkstra
 int Graph::computeShortestPath(int src, int dest) {
     if (src < 0 || dest < 0 || src >= numVertices || dest >= numVertices) return -1;
     int* dist = new int[numVertices];
@@ -91,6 +94,8 @@ int Graph::computeShortestPath(int src, int dest) {
     delete[] used;
     return answer;
 }
+
+
 
 int Graph::computeSpanningTree() {
     if (numVertices == 0) return 0;
@@ -128,28 +133,32 @@ int Graph::computeSpanningTree() {
     return total;
 }
 
+
+// Εύρεση συνδεδεμένων συστατικών με BFS
 int Graph::findConnectedComponents() {
     bool* vis = new bool[numVertices];
+    int* queueArr = new int[numVertices];
     for (int i = 0; i < numVertices; ++i) vis[i] = false;
     int count = 0;
-    std::queue<int> q;
-
     for (int i = 0; i < numVertices; ++i) {
         if (!vis[i]) {
-            ++count;
-            vis[i] = true;
-            q.push(i);
-            while (!q.empty()) {
-                int u = q.front(); q.pop();
+            count++;
+            int head = 0, tail = 0;      // αρχικοποίηση head/tail
+            queueArr[tail++] = i;
+            vis[i] = true;       
+                while (head < tail) {     // κλασική BFS
+                int u = queueArr[head++];
                 for (EdgeNode* p = adj[u]; p; p = p->next) {
-                    if (!vis[p->to]) {
-                        vis[p->to] = true;
-                        q.push(p->to);
+                    int v = p->to;
+                    if (!vis[v]) {
+                        vis[v] = true;
+                        queueArr[tail++] = v;
                     }
                 }
             }
         }
     }
+    delete[] queueArr;
     delete[] vis;
     return count;
 }
