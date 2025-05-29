@@ -1,6 +1,5 @@
 ﻿#include <iostream>
 #include <fstream>
-#include <sstream>
 #include <string>
 #include <chrono>
 #include "MinHeap.h"
@@ -9,6 +8,24 @@
 #include "Graph.h"
 #include "Hashtable.h"
 
+// Βοηθητική συνάρτηση: διαβάζει όλα τα ints από ένα αρχείο
+// σε δυναμικό πίνακα και επιστρέφει τον πίνακα + το πλήθος.
+void readFileToArray(const std::string& filename, int*& outArr, int& outCount) {
+    std::ifstream f(filename);
+    int v;
+    outCount = 0;
+    while (f >> v) {
+        outCount++;
+    }
+    f.clear();
+    f.seekg(0);
+    outArr = new int[outCount];
+    for (int i = 0; i < outCount; ++i) {
+        f >> outArr[i];
+    }
+    f.close();
+}
+
 int main() {
     MinHeap    minHeap;
     MaxHeap    maxHeap;
@@ -16,81 +33,58 @@ int main() {
     Graph      graph;
     Hashtable  hashtable;
 
-    // Άνοιγμα αρχείων εντολών και εξόδου
     std::ifstream commands("commands.txt");
     std::ofstream output("output.txt");
     if (!commands.is_open() || !output.is_open()) {
-        std::cerr << "output.txt ή commands.txt δεν βρέθηκε\n";
+        std::cerr << "Σφάλμα: δεν μπόρεσα να ανοίξω commands.txt ή output.txt\n";
         return 1;
     }
 
-    std::string line;
-    // Διαβάζουμε κάθε γραμμή (εντολή)
-    while (std::getline(commands, line)) {
-        if (line.empty()) continue;
-
-        auto start = std::chrono::high_resolution_clock::now();     // Αρχή μέτρησης χρόνου
-
-        std::istringstream parser(line);
-        std::string cmd;
-        parser >> cmd;
+    std::string cmd, structure;
+    while (commands >> cmd >> structure) {
+        auto start = std::chrono::high_resolution_clock::now();
         std::string result;
 
-        // Επεξεργασία εντολής
         if (cmd == "BUILD") {
-            std::string s, fname;
-            parser >> s >> fname;
-            if (s == "MINHEAP") {
-                std::ifstream f(fname);
-                int v, count = 0;
-                while (f >> v) count++;
-                f.clear(); f.seekg(0);
-                int* a = new int[count];
-                for (int i = 0; i < count; ++i) f >> a[i];
-                f.close();
-                minHeap.buildFromArray(a, count);
-                delete[] a;
+            std::string filename;
+            commands >> filename;
+
+            // ομαδοποιημένη κατασκευή MinHeap/MaxHeap/AVLTree
+            if (structure == "MINHEAP" || structure == "MAXHEAP" || structure == "AVLTREE"){
+                int* arr, count;
+                readFileToArray(filename, arr, count);
+
+                if (structure == "MINHEAP") {
+                    minHeap.buildFromArray(arr, count);
+                }
+                else if (structure == "MAXHEAP") {
+                    maxHeap.buildFromArray(arr, count);
+                }
+                else { // AVLTREE
+                    avlTree.buildFromArray(arr, count);
+                }
+
+                delete[] arr;
                 result = "SUCCESS";
             }
-            else if (s == "MAXHEAP") {
-                std::ifstream f(fname);
-                int v, count = 0;
-                while (f >> v) count++;
-                f.clear(); f.seekg(0);
-                int* a = new int[count];
-                for (int i = 0; i < count; ++i) f >> a[i];
-                f.close();
-                maxHeap.buildFromArray(a, count);
-                delete[] a;
-                result = "SUCCESS";
-            }
-            else if (s == "AVLTREE") {
-                std::ifstream f(fname);
-                int v, count = 0;
-                while (f >> v) count++;
-                f.clear(); f.seekg(0);
-                int* a = new int[count];
-                for (int i = 0; i < count; ++i) f >> a[i];
-                f.close();
-                avlTree.buildFromArray(a, count);
-                delete[] a;
-                result = "SUCCESS";
-            }
-            else if (s == "GRAPH") {
-                std::ifstream f(fname);
+            else if (structure == "GRAPH") {
+                std::ifstream f(filename);
                 int u, v, w, maxNode = -1;
                 while (f >> u >> v >> w) {
                     if (u > maxNode) maxNode = u;
                     if (v > maxNode) maxNode = v;
                 }
-                f.clear(); f.seekg(0);
+                f.clear();
+                f.seekg(0);
                 graph.buildGraph(maxNode + 1);
-                while (f >> u >> v >> w) graph.insertEdge(u, v, w);
+                while (f >> u >> v >> w) {
+                    graph.insertEdge(u, v, w);
+                }
                 f.close();
                 result = "SUCCESS";
             }
-            else if (s == "HASHTABLE") {
-                hashtable.buildFromArray(fname.c_str());
+            else if (structure == "HASHTABLE") {
+                hashtable.buildFromArray(filename.c_str());
                 result = "SUCCESS";
             }
             else {
@@ -98,93 +92,139 @@ int main() {
             }
         }
         else if (cmd == "GETSIZE") {
-            std::string s; parser >> s;
-            if (s == "MINHEAP")   result = std::to_string(minHeap.getSize());
-            else if (s == "MAXHEAP")   result = std::to_string(maxHeap.getSize());
-            else if (s == "AVLTREE")   result = std::to_string(avlTree.getSize());
-            else if (s == "GRAPH") {
-                int V, E; graph.getSize(V, E);
+            if (structure == "MINHEAP") {
+                result = std::to_string(minHeap.getSize());
+            }
+            else if (structure == "MAXHEAP") {
+                result = std::to_string(maxHeap.getSize());
+            }
+            else if (structure == "AVLTREE") {
+                result = std::to_string(avlTree.getSize());
+            }
+            else if (structure == "GRAPH") {
+                int V, E;
+                graph.getSize(V, E);
                 result = std::to_string(V) + " " + std::to_string(E);
             }
-            else if (s == "HASHTABLE") result = std::to_string(hashtable.getSize());
-            else                        result = "FAILURE";
+            else if (structure == "HASHTABLE") {
+                result = std::to_string(hashtable.getSize());
+            }
+            else {
+                result = "FAILURE";
+            }
         }
         else if (cmd == "FINDMIN") {
-            std::string s; parser >> s;
-            if (s == "MINHEAP") result = std::to_string(minHeap.getMin());
-            else if (s == "AVLTREE") result = std::to_string(avlTree.findMin());
-            else                      result = "FAILURE";
+            if (structure == "MINHEAP")    result = std::to_string(minHeap.getMin());
+            else if (structure == "AVLTREE")    result = std::to_string(avlTree.findMin());
+            else                                result = "FAILURE";
         }
         else if (cmd == "FINDMAX") {
-            std::string s; parser >> s;
-            if (s == "MAXHEAP") result = std::to_string(maxHeap.getMax());
-            else                      result = "FAILURE";
+            if (structure == "MAXHEAP")    result = std::to_string(maxHeap.getMax());
+            else                                result = "FAILURE";
         }
         else if (cmd == "SEARCH") {
-            std::string s; int k; parser >> s >> k;
-            bool ok = (s == "AVLTREE" ? avlTree.search(k)
-                : s == "HASHTABLE" ? hashtable.search(k)
+            int key;
+            commands >> key;
+            bool ok = (structure == "AVLTREE" ? avlTree.search(key)
+                : structure == "HASHTABLE" ? hashtable.search(key)
                 : false);
             result = ok ? "SUCCESS" : "FAILURE";
         }
         else if (cmd == "INSERT") {
-            std::string s; parser >> s;
-            if (s == "MINHEAP") { int x; parser >> x; minHeap.insert(x);    result = "SUCCESS"; }
-            else if (s == "MAXHEAP") { int x; parser >> x; maxHeap.insert(x);    result = "SUCCESS"; }
-            else if (s == "AVLTREE") { int x; parser >> x; avlTree.insert(x);    result = "SUCCESS"; }
-            else if (s == "HASHTABLE") { int x; parser >> x; hashtable.insert(x);  result = "SUCCESS"; }
-            else if (s == "GRAPH") { int a, b, c; parser >> a >> b >> c; graph.insertEdge(a, b, c); result = "SUCCESS"; }
-            else                      result = "FAILURE";
+            if (structure == "MINHEAP") {
+                int x; commands >> x;
+                minHeap.insert(x);
+                result = "SUCCESS";
+            }
+            else if (structure == "MAXHEAP") {
+                int x; commands >> x;
+                maxHeap.insert(x);
+                result = "SUCCESS";
+            }
+            else if (structure == "AVLTREE") {
+                int x; commands >> x;
+                avlTree.insert(x);
+                result = "SUCCESS";
+            }
+            else if (structure == "HASHTABLE") {
+                int x; commands >> x;
+                hashtable.insert(x);
+                result = "SUCCESS";
+            }
+            else if (structure == "GRAPH") {
+                int a, b, c;
+                commands >> a >> b >> c;
+                graph.insertEdge(a, b, c);
+                result = "SUCCESS";
+            }
+            else {
+                result = "FAILURE";
+            }
         }
         else if (cmd == "DELETEMIN") {
-            std::string s; parser >> s;
-            result = (s == "MINHEAP" ? std::to_string(minHeap.deleteMin()) : "FAILURE");
+            if (structure == "MINHEAP")
+                result = std::to_string(minHeap.deleteMin());
+            else
+                result = "FAILURE";
         }
         else if (cmd == "DELETEMAX") {
-            std::string s; parser >> s;
-            result = (s == "MAXHEAP" ? std::to_string(maxHeap.deleteMax()) : "FAILURE");
+            if (structure == "MAXHEAP")
+                result = std::to_string(maxHeap.deleteMax());
+            else
+                result = "FAILURE";
         }
         else if (cmd == "DELETE") {
-            std::string s; parser >> s;
-            if (s == "AVLTREE") {
-                int k; parser >> k;
-                if (avlTree.search(k)) { avlTree.deleteKey(k); result = "SUCCESS"; }
-                else                    result = "FAILURE";
+            if (structure == "AVLTREE") {
+                int k; commands >> k;
+                if (avlTree.search(k)) {
+                    avlTree.deleteKey(k);
+                    result = "SUCCESS";
+                }
+                else {
+                    result = "FAILURE";
+                }
             }
-            else if (s == "GRAPH") {
-                int a, b; parser >> a >> b;
+            else if (structure == "GRAPH") {
+                int a, b;
+                commands >> a >> b;
                 graph.deleteEdge(a, b);
                 result = "SUCCESS";
             }
-            else result = "FAILURE";
+            else {
+                // deleteKey στο Hashtable δεν υπάρχει
+                result = "FAILURE";
+            }
         }
         else if (cmd == "COMPUTESHORTESTPATH") {
-            std::string s; int a, b; parser >> s >> a >> b;
-            if (s == "GRAPH") {
+            int a, b;
+            commands >> a >> b;
+            if (structure == "GRAPH") {
                 int d = graph.computeShortestPath(a, b);
                 result = (d < 0 ? "FAILURE" : std::to_string(d));
             }
-            else result = "FAILURE";
+            else {
+                result = "FAILURE";
+            }
         }
         else if (cmd == "COMPUTESPANNINGTREE") {
-            std::string s; parser >> s;
-            if (s == "GRAPH") result = std::to_string(graph.computeSpanningTree());
-            else            result = "FAILURE";
+            if (structure == "GRAPH")
+                result = std::to_string(graph.computeSpanningTree());
+            else
+                result = "FAILURE";
         }
         else if (cmd == "FINDCONNECTEDCOMPONENTS") {
-            std::string s; parser >> s;
-            if (s == "GRAPH") result = std::to_string(graph.findConnectedComponents());
-            else            result = "FAILURE";
+            if (structure == "GRAPH")
+                result = std::to_string(graph.findConnectedComponents());
+            else
+                result = "FAILURE";
         }
         else {
-            result = "FAILURE";
+            result = "FAILURE"; // άγνωστη εντολή
         }
 
-        auto end = std::chrono::high_resolution_clock::now();    // Τέλος μέτρησης χρόνου
-        auto duration_us = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-
-        // Γράφει αποτέλεσμα + χρόνο σε μs
-        output << result << " " << duration_us << "us\n";
+        auto end = std::chrono::high_resolution_clock::now();
+        auto us = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        output << result << " " << us << "us\n";
     }
 
     commands.close();

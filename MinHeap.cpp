@@ -105,7 +105,6 @@ void MinHeap::buildFromArray(int* data, int count) {
     arr = new int[capacity];
     for (int i = 0; i < count; i++) {
         arr[i] = data[i];    // αντιγράφει τα δεδομένα
-
     }
     for (int i = count / 2 - 1; i >= 0; i--) {
         heapifyDown(i);    // χτίζει σωρό με heapifyDown από τα μέσα
