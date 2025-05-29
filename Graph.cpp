@@ -3,7 +3,11 @@
 
 static const int INF = std::numeric_limits<int>::max();
 
-Graph::Graph() : numVertices(0), numEdges(0), adj(nullptr) {}
+Graph::Graph(){
+    numVertices = 0;
+    numEdges = 0;
+    adj = nullptr;
+}
 
 void Graph::buildGraph(int n) {
     numVertices = n;    // Ορίζουμε νέα δομή με n κορυφές, χωρίς ακμές

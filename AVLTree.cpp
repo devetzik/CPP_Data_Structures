@@ -1,24 +1,31 @@
 ﻿#include "AVLTree.h"
 #include <algorithm>
 
-// Constructor: αρχικοποίηση κενού δέντρου
-AVLTree::AVLTree() : root(nullptr), nodeCount(0) {}
-
-// Destructor: απελευθέρωση όλων των κόμβων
-AVLTree::~AVLTree() {
-    clearTree(root);
+// Constructor, αρχικοποίηση ρίζας και πλήθους κόμβων
+AVLTree::AVLTree(){
     root = nullptr;
     nodeCount = 0;
 }
 
+
 // Επιστρέφει το ύψος κόμβου ή 0 αν node==nullptr
 int AVLTree::height(AVLNode* node) {
-    return node ? node->height : 0;
+    if (node == nullptr) {
+        return 0;
+    }
+	else {
+		return node->height;
+    }
 }
 
 // Υπολογίζει balance factor
 int AVLTree::balanceFactor(AVLNode* node) {
-    return node ? height(node->left) - height(node->right) : 0;
+	if (node == nullptr) {
+		return 0;
+	}
+    else {
+		return height(node->left) - height(node->right);
+    }
 }
 
 AVLNode* AVLTree::rotateRight(AVLNode* x) {   // Δεξιά περιστροφή (LL)
@@ -56,7 +63,6 @@ AVLNode* AVLTree::insertNode(AVLNode* node, int key) {
     else{
         node->right = insertNode(node->right, key);
     }
-    
 
     node->height = 1 + std::max(height(node->left), height(node->right));    // Ενημέρωση ύψους
     int balance = balanceFactor(node);
@@ -169,7 +175,12 @@ bool AVLTree::search(int key) {
 int AVLTree::findMin() {
     if (!root) return -1;
     AVLNode* mn = findMinNode(root);
-    return mn ? mn->key : -1;
+    if (mn == nullptr) { 
+        return -1;
+    }
+    else{
+		return mn->key;
+    }
 }
 
 // Επιστροφή πλήθους κόμβων
@@ -177,22 +188,12 @@ int AVLTree::getSize() {
     return nodeCount;
 }
 
-// Διαγραφή όλων των κόμβων ενός υποδέντρου
-void AVLTree::clearTree(AVLNode* node) {
-    if (!node) return;
-    clearTree(node->left);
-    clearTree(node->right);
-    delete node;
-}
 
 // Κατασκευή από πίνακα δεδομένων
 void AVLTree::buildFromArray(int* data, int n) {
-    // Καθαρισμός παλιού δέντρου
-    clearTree(root);
     root = nullptr;
     nodeCount = 0;
-    // Εισαγωγή στοιχείων ένα-ένα
     for (int i = 0; i < n; ++i) {
-        insert(data[i]);
+        insert(data[i]);    // Εισαγωγή στοιχείων ένα-ένα
     }
 }

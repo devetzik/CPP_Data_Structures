@@ -13,7 +13,6 @@ private:
 
 public:
     MaxHeap();                  // Constuctor
-	~MaxHeap();                 // Destructor
 
     void insert(int value);     // Εισάγει νέο στοιχείο στον σωρό
     int getMax();               // Επιστρέφει το μέγιστο στοιχείο (ρίζα), ή -1 αν κενό

@@ -26,11 +26,9 @@ private:
     AVLNode* insertNode(AVLNode* node, int key);  // Αναδρομική εισαγωγή: επιστρέφει νέa ρίζα υποδέντρου
     AVLNode* deleteNode(AVLNode* node, int key);   // Αναδρομική διαγραφή: επιστρέφει νέa ρίζα υποδέντρου
     AVLNode* findMinNode(AVLNode* node);  // Επιστρέφει τον κόμβο με το ελάχιστο key σε ένα υποδέντρο
-    void clearTree(AVLNode* node);        // Διαγράφει αναδρομικά όλους τους κόμβους υποδέντρου
 
 public:
     AVLTree();                     // constructor
-    ~AVLTree();                    // destructor
 
     void insert(int key);          // εισαγωγή νέου key
     void deleteKey(int key);       // διαγραφή υπάρχοντος key

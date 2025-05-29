@@ -12,7 +12,6 @@ private:
 
 public:
     Hashtable();
-    ~Hashtable();
 
     void buildFromArray(const char* filename); // διαβάζει και κάνει insert από αρχείο
     void insert(int key);

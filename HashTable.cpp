@@ -1,24 +1,27 @@
 ﻿#include "Hashtable.h"
 #include <fstream>
 
-const double LOAD_FACTOR = 0.75;
+const double LOAD_FACTOR = 0.75; // Όριο πληρότητας για επανακατασκευή
 
-Hashtable::Hashtable()
-    : table(nullptr), capacity(0), size(0)
-{
-}
 
-Hashtable::~Hashtable() {
-    delete[] table;
+// Constructor
+Hashtable::Hashtable(){
+    table = nullptr;
+    capacity = 0;
+    size = 0;
 }
 
 void Hashtable::rehash() {
     int oldCap = capacity;
     int* oldTbl = table;
-
-    capacity = (capacity == 0 ? 4 : capacity * 2);     // Νέο μέγεθος
+    if (capacity == 0) {         // Νέο μέγεθος
+        capacity = 4;
+    }
+    else {
+        capacity = capacity * 2;
+    }
     table = new int[capacity];
-    for (int i = 0; i < capacity; ++i) {
+    for (int i = 0; i < capacity; i++) {
         table[i] = INT_MIN;    // Αρχικοποίηση για «κενή» θέση
     }
     size = 0;
@@ -52,9 +55,11 @@ void Hashtable::insert(int key) {
         idx = (idx + 1) % capacity;
     }
     table[idx] = key;
-    ++size;
+    size++;
 }
 
+
+// Αναζήτηση στοιχείου στον πίνακα
 bool Hashtable::search(int key){
     if (capacity == 0) return false;
     int idx = hashFunction(key);
@@ -70,10 +75,14 @@ bool Hashtable::search(int key){
     return false;
 }
 
+
+// Επιστρέφει το πλήθος των στοιχείων
 int Hashtable::getSize(){
     return size;
 }
 
+
+// Διαβάζει από αρχείο και κάνει insert τα στοιχεία στον πίνακα
 void Hashtable::buildFromArray(const char* filename) {
     std::ifstream in(filename);
     int x;

@@ -9,11 +9,6 @@ MaxHeap::MaxHeap() {
 }
 
 
-//Destructor
-MaxHeap::~MaxHeap() {
-    delete[] arr;
-}
-
 // αν ο πίνακας είναι γεμάτος, διπλασιάζει τη χωρητικότητα
 void MaxHeap::ensureCapacity() {
     if (size < capacity) return;    // ακόμα υπάρχει χώρος

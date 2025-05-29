@@ -13,7 +13,6 @@ private:
 
 public:
     MinHeap();                 // constructor
-    ~MinHeap();                // destructor
 
     void insert(int value);    // εισαγωγή νέου στοιχείου
     int getMin();              // επιστρέφει το ελάχιστο (ρίζα) ή -1 αν άδειος

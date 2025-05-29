@@ -8,11 +8,6 @@ MinHeap::MinHeap() {
     arr = new int[capacity];
 }
 
-// Destructor
-MinHeap::~MinHeap() {
-    delete[] arr;
-}
-
 // αν ο πίνακας είναι γεμάτος, διπλασιάζει τη χωρητικότητα
 void MinHeap::ensureCapacity() {
     if (size < capacity) return;
