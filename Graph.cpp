@@ -1,15 +1,16 @@
 ﻿#include "Graph.h"
 
-const int INF = 99999999; // Απείρως μεγάλο βάρος για Dijkstra
-
+// Constructor
 Graph::Graph(){
     numVertices = 0;
     numEdges = 0;
     adj = nullptr;
 }
 
+
+// Κατασκευάζει γράφο με n κορυφές, χωρίς ακμές
 void Graph::buildGraph(int n) {
-    numVertices = n;    // Ορίζουμε νέα δομή με n κορυφές, χωρίς ακμές
+    numVertices = n;
     numEdges = 0;
     adj = new EdgeNode * [n];
     for (int i = 0; i < n; ++i) {
@@ -17,6 +18,8 @@ void Graph::buildGraph(int n) {
     }
 }
 
+
+// Εισάγει ακμή u–v με βάρος w
 void Graph::insertEdge(int u, int v, int w) {
     if (u < 0 || v < 0 || u >= numVertices || v >= numVertices) return;
     adj[u] = new EdgeNode(v, w, adj[u]);    // προσθήκη u→v
@@ -24,10 +27,11 @@ void Graph::insertEdge(int u, int v, int w) {
     ++numEdges;
 }
 
+
+// Διαγράφει την ακμή u–v
 void Graph::deleteEdge(int u, int v) {
     if (u < 0 || v < 0 || u >= numVertices || v >= numVertices) return;
-    // διαγραφή από adj[u]
-    EdgeNode** pp = &adj[u];
+    EdgeNode** pp = &adj[u];    // διαγραφή από adj[u]
     while (*pp) {
         if ((*pp)->to == v) {
             EdgeNode* tmp = *pp;
@@ -38,8 +42,7 @@ void Graph::deleteEdge(int u, int v) {
         }
         pp = &((*pp)->next);
     }
-    // διαγραφή από adj[v]
-    pp = &adj[v];
+	pp = &adj[v];	// διαγραφή από adj[v]
     while (*pp) {
         if ((*pp)->to == u) {
             EdgeNode* tmp = *pp;
@@ -61,21 +64,22 @@ void Graph::getSize(int& vertices, int& edges) {
 
 // Υπολογίζει το βραχύτερο μονοπάτι από src σε dest με Dijkstra
 int Graph::computeShortestPath(int src, int dest) {
-    if (src < 0 || dest < 0 || src >= numVertices || dest >= numVertices) return -1;
+    if (src < 0 || dest < 0 || src >= numVertices || dest >= numVertices) {
+        return -1;
+    }
     int* dist = new int[numVertices];
     bool* used = new bool[numVertices];
-    for (int i = 0; i < numVertices; ++i) {
-        dist[i] = INF;
+    for (int i = 0; i < numVertices; i++) {
+        dist[i] = -1;
         used[i] = false;
     }
     dist[src] = 0;
 
     // Dijkstra
-    for (int k = 0; k < numVertices; ++k) {
-        int u = -1, best = INF;
-        for (int i = 0; i < numVertices; ++i) {
-            if (!used[i] && dist[i] < best) {
-                best = dist[i];
+    for (int k = 0; k < numVertices; k++) {
+        int u = -1;
+        for (int i = 0; i < numVertices; i++) {
+            if (!used[i] && dist[i] >=0 && (u<0 || dist[i] < dist[u])) {
                 u = i;
             }
         }
@@ -83,46 +87,50 @@ int Graph::computeShortestPath(int src, int dest) {
         used[u] = true;
         for (EdgeNode* p = adj[u]; p; p = p->next) {
             int v = p->to, w = p->weight;
-            if (!used[v] && dist[u] + w < dist[v]) {
-                dist[v] = dist[u] + w;
+            if (!used[v]) {
+                int nd = dist[u] + w;
+				if (dist[v] < 0 || nd < dist[v]) {
+					dist[v] = nd;  // Ενημερώνει την απόσταση αν είναι μικρότερη
+				}
             }
         }
     }
 
-    int answer = (dist[dest] == INF ? -1 : dist[dest]);
+    int ans = dist[dest];
     delete[] dist;
     delete[] used;
-    return answer;
+    return ans;
 }
 
 
-
+// Υπολογίζει το ελάχιστο συνδεδεμένο δέντρο (MST) με Prim
 int Graph::computeSpanningTree() {
-    if (numVertices == 0) return 0;
+    if (numVertices == 0) {
+        return 0;
+    }
     bool* inMST = new bool[numVertices];
     int* key = new int[numVertices];
-    for (int i = 0; i < numVertices; ++i) {
+    for (int i = 0; i < numVertices; i++) {
         inMST[i] = false;
-        key[i] = INF;
+        key[i] = -1;
     }
     key[0] = 0;
     int total = 0;
 
-    // Απλοποιημένο Prim O(V^2)
-    for (int c = 0; c < numVertices; ++c) {
-        int u = -1, best = INF;
-        for (int i = 0; i < numVertices; ++i) {
-            if (!inMST[i] && key[i] < best) {
-                best = key[i];
+    for (int c = 0; c < numVertices; c++) {
+        int u = -1;
+        for (int i = 0; i < numVertices; i++) {
+            if (!inMST[i] && key[i] >=0 && (u<0 || key[i] < key[u])) {
                 u = i;
             }
         }
         if (u < 0) break;
         inMST[u] = true;
-        total += (best == INF ? 0 : best);
+		total += key[u];  // Προσθέτει το βάρος της ακμής στην MST		
+
         for (EdgeNode* p = adj[u]; p; p = p->next) {
             int v = p->to, w = p->weight;
-            if (!inMST[v] && w < key[v]) {
+            if (!inMST[v] && (key[v] <0 || w < key[v])) {
                 key[v] = w;
             }
         }

@@ -24,7 +24,7 @@ void Hashtable::rehash() {
     }
     table = new int[capacity];
     for (int i = 0; i < capacity; i++) {
-        table[i] = INT_MIN;    // Αρχικοποίηση για «κενή» θέση
+        table[i] = INT_MIN;    // Αρχικοποίηση
     }
     size = 0;
 
@@ -45,12 +45,11 @@ int Hashtable::hashFunction(int key) {
 
 // Εισαγωγή νέου στοιχείου στον πίνακα
 void Hashtable::insert(int key) {
-    // rehash αν load factor πολύ μεγάλος ή αν ο πίνακας άδειος
     if (capacity == 0 || (double)size / capacity > LOAD_FACTOR) {
-        rehash();
+        rehash();        // rehash αν load factor πολύ μεγάλος ή αν ο πίνακας άδειος
     }
     int idx = hashFunction(key);
-    // Γραμμική διερεύνηση μέχρι sentinel
+    
     while (table[idx] != INT_MIN) {
         if (table[idx] == key) {
             return;  // υπάρχει ήδη
@@ -67,7 +66,6 @@ bool Hashtable::search(int key){
     if (capacity == 0) return false;
     int idx = hashFunction(key);
     int start = idx;
-    // Ψάχνουμε μέχρι να πέσουμε σε sentinel ή να βρούμε το key
     while (table[idx] != INT_MIN) {
         if (table[idx] == key) {
             return true;

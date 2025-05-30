@@ -26,10 +26,7 @@ void readFileToArray(std::string& filename, int*& outArr, int& outCount) {
     f.close();
 }
 
-/// <summary>
-/// 
-/// </summary>
-/// <returns></returns>
+
 
 int main() {
     
@@ -40,19 +37,19 @@ int main() {
     Hashtable  hashtable;
     
 
-    std::ifstream commands("commands.txt");
-    std::ofstream output("output.txt");
-    if (!commands.is_open() || !output.is_open()) {
+	std::ifstream commands("commands.txt");    // Διαβάζει τις εντολές από το αρχείο commands.txt
+	std::ofstream output("output.txt");        // Γράφει τα αποτελέσματα στο αρχείο output.txt
+	if (!commands.is_open() || !output.is_open()) {       // Έλεγχος αν τα αρχεία άνοιξαν σωστά
         std::cerr << "Δεν βρέθηκε commands.txt ή output.txt\n";
         return 1;
     }
 
     std::string cmd, s;
-    while (commands >> cmd >> s) {
+	while (commands >> cmd >> s) {       // Διαβάζει την εντολή και το όνομα της δομής
         auto start = std::chrono::high_resolution_clock::now();   // Αρχή χρονομέτρησης
         std::string res="FAILURE";
-
-        if (cmd == "BUILD") {     // Εντολή build
+       
+		if (cmd == "BUILD") {           // Εντολή για κατασκευή δομής από αρχείο
             std::string fname;
             commands >> fname;
 
@@ -94,7 +91,7 @@ int main() {
                 res = "SUCCESS";
             }
         }
-        else if (cmd == "GETSIZE") {
+		else if (cmd == "GETSIZE") {          // Εντολή για να πάρουμε το μέγεθος της δομής
             if (s == "MINHEAP") {
                 res = std::to_string(minHeap.getSize());
             }
@@ -113,7 +110,7 @@ int main() {
                 res = std::to_string(hashtable.getSize());
             }
         }
-        else if (cmd == "FINDMIN") {
+		else if (cmd == "FINDMIN") {        // Eλάχιστο στοιχείο δομής
             if (s == "MINHEAP") {
                 res = std::to_string(minHeap.getMin());
             }
@@ -121,12 +118,12 @@ int main() {
                 res = std::to_string(avlTree.findMin());
             }
         }
-        else if (cmd == "FINDMAX") {
+		else if (cmd == "FINDMAX") {         // Μέγιστο στοιχείο δομής
             if (s == "MAXHEAP") {
                 res = std::to_string(maxHeap.getMax());
             }
         }
-        else if (cmd == "SEARCH") {
+		else if (cmd == "SEARCH") {          // Αναζήτηση στοιχείου
             int key;
             commands >> key;
             
@@ -141,7 +138,7 @@ int main() {
                 }
             }
         }
-        else if (cmd == "INSERT") {
+		else if (cmd == "INSERT") {           // Εισαγωγή στοιχείου στη δομή
             int x;
             if (s == "MINHEAP") {
                 commands >> x;
@@ -170,17 +167,17 @@ int main() {
                 res = "SUCCESS";
             }
         }
-        else if (cmd == "DELETEMIN") {
+		else if (cmd == "DELETEMIN") {       // Διαγραφή ελάχιστου στοιχείου από τη δομή
             if (s == "MINHEAP") {
                 res = std::to_string(minHeap.deleteMin());
             }
         }
-        else if (cmd == "DELETEMAX") {
+		else if (cmd == "DELETEMAX") {      // Διαγραφή μέγιστου στοιχείου από τη δομή
             if (s == "MAXHEAP") {
                 res = std::to_string(maxHeap.deleteMax());
             }
         }
-        else if (cmd == "DELETE") {
+		else if (cmd == "DELETE") {         // Διαγραφή συγκεκριμένου στοιχείου από τη δομή
             if (s == "AVLTREE") {
                 int k;
                 commands >> k;
@@ -196,7 +193,7 @@ int main() {
                 res = "SUCCESS";
             }
         }
-        else if (cmd == "COMPUTESHORTESTPATH") {
+		else if (cmd == "COMPUTESHORTESTPATH") {     // Υπολογισμός συντομότερης διαδρομής
             int a, b;
             commands >> a >> b;
             if (s == "GRAPH") {
@@ -207,12 +204,12 @@ int main() {
                 }
             }
         }
-        else if (cmd == "COMPUTESPANNINGTREE") {
+		else if (cmd == "COMPUTESPANNINGTREE") {     // Υπολογισμός ελάχιστου δέντρου
             if (s == "GRAPH") {
                 res = std::to_string(graph.computeSpanningTree());
             }
         }
-        else if (cmd == "FINDCONNECTEDCOMPONENTS") {
+		else if (cmd == "FINDCONNECTEDCOMPONENTS") {     // Υπολογισμός συνιστωσών
             if (s == "GRAPH") {
                 res = std::to_string(graph.findConnectedComponents());
             }

@@ -1,6 +1,6 @@
 ﻿#include "AVLTree.h"
 
-// Constructor, αρχικοποίηση ρίζας και πλήθους κόμβων
+// Constructor
 AVLTree::AVLTree(){
     root = nullptr;
     nodeCount = 0;
@@ -119,9 +119,15 @@ AVLNode* AVLTree::deleteNode(AVLNode* node, int key) {
         node->right = deleteNode(node->right, key);
     }
     else {
-        // Περίπτωση με 1 ή 0 παιδιά
-        if (!node->left || !node->right) {
-            AVLNode* temp = node->left ? node->left : node->right;
+        if (!node->left || !node->right) {        // Περίπτωση με 1 ή 0 παιδιά
+            AVLNode* temp;
+            if (node->left) {
+                temp = node->left;
+            }
+            else {
+                temp = node->right;
+            }
+
             if (!temp) {    // χωρίς παιδιά
                 temp = node;
                 node = nullptr;
@@ -132,29 +138,29 @@ AVLNode* AVLTree::deleteNode(AVLNode* node, int key) {
             delete temp;
         }
         else {
-            // Δύο παιδιά: αντικατάσταση με in-order διάδοχο
             AVLNode* temp = findMinNode(node->right);
             node->key = temp->key;
             node->right = deleteNode(node->right, temp->key);
         }
     }
-    if (!node) return node;
-    // Ενημέρωση ύψους
-    node->height = 1 + max(height(node->left), height(node->right));
+    if (!node) {
+        return node;
+    }
+    node->height = 1 + max(height(node->left), height(node->right));    // Ενημέρωση ύψους
     int balance = balanceFactor(node);
-    // LL
-    if (balance > 1 && balanceFactor(node->left) >= 0)
+ 
+    if (balance > 1 && balanceFactor(node->left) >= 0)   // LL
         return rotateRight(node);
-    // LR
-    if (balance > 1 && balanceFactor(node->left) < 0) {
+   
+    if (balance > 1 && balanceFactor(node->left) < 0) {  // LR
         node->left = rotateLeft(node->left);
         return rotateRight(node);
     }
-    // RR
-    if (balance < -1 && balanceFactor(node->right) <= 0)
+   
+    if (balance < -1 && balanceFactor(node->right) <= 0)  // RR
         return rotateLeft(node);
-    // RL
-    if (balance < -1 && balanceFactor(node->right) > 0) {
+
+    if (balance < -1 && balanceFactor(node->right) > 0) {  // RL
         node->right = rotateRight(node->right);
         return rotateLeft(node);
     }
