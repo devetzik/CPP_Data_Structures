@@ -4,6 +4,7 @@
 class Hashtable {
 private:
     int* table;     // πίνακας κλειδιών
+	bool* occupied; // πίνακας για να ελέγχουμε αν η θέση είναι occupied
     int capacity;   // μέγεθος πίνακα
     int size;       // πόσα στοιχεία έχουμε
 
